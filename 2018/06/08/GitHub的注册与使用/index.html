@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="0. 准备工作 操作系统: Ubuntu 18.04  1. 什么是 GitHub ？GitHub 是一个基于 git 的代码托管平台。从开源到商业，可以托管代码、查看代码、管理项目、与其他开发人员一起构建软件。官方网站：https://github.com/    2. 注册 登录官网首页，输入用户名Username、邮箱Email、密码Password，点击注册 “Sign up for Gi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GitHub 的注册与使用">
+<meta property="og:url" content="http://yoursite.com/2018/06/08/GitHub的注册与使用/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="0. 准备工作 操作系统: Ubuntu 18.04  1. 什么是 GitHub ？GitHub 是一个基于 git 的代码托管平台。从开源到商业，可以托管代码、查看代码、管理项目、与其他开发人员一起构建软件。官方网站：https://github.com/    2. 注册 登录官网首页，输入用户名Username、邮箱Email、密码Password，点击注册 “Sign up for Gi">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A801-%E6%B3%A8%E5%86%8C.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A802-plan.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A803-experience.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A804-Learn.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A805-verify.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A806-email.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A807-verified.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A807-verified.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A809-create.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A810-quicksetup.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A811-test.png">
+<meta property="og:updated_time" content="2018-06-08T09:39:40.957Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GitHub 的注册与使用">
+<meta name="twitter:description" content="0. 准备工作 操作系统: Ubuntu 18.04  1. 什么是 GitHub ？GitHub 是一个基于 git 的代码托管平台。从开源到商业，可以托管代码、查看代码、管理项目、与其他开发人员一起构建软件。官方网站：https://github.com/    2. 注册 登录官网首页，输入用户名Username、邮箱Email、密码Password，点击注册 “Sign up for Gi">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A801-%E6%B3%A8%E5%86%8C.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/08/GitHub的注册与使用/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>GitHub 的注册与使用 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/GitHub的注册与使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="b31jsc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">GitHub 的注册与使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-06-08 15:11:11 / 修改时间：17:39:40" itemprop="dateCreated datePublished" datetime="2018-06-08T15:11:11+08:00">2018-06-08</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="0-准备工作"><a href="#0-准备工作" class="headerlink" title="0. 准备工作"></a>0. 准备工作</h4><ul>
+<li>操作系统: Ubuntu 18.04</li>
+</ul>
+<h4 id="1-什么是-GitHub-？"><a href="#1-什么是-GitHub-？" class="headerlink" title="1. 什么是 GitHub ？"></a>1. 什么是 GitHub ？</h4><p><strong>GitHub</strong> 是一个基于 git 的代码托管平台。从开源到商业，可以托管代码、查看代码、管理项目、与其他开发人员一起构建软件。<br>官方网站：<a href="https://github.com/" target="_blank" rel="noopener">https://github.com/</a>   </p>
+<h4 id="2-注册"><a href="#2-注册" class="headerlink" title="2. 注册"></a>2. 注册</h4><ul>
+<li><p>登录官网首页，输入用户名Username、邮箱Email、密码Password，点击注册 “<strong>Sign up for GitHub</strong>“<br><img src="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A801-%E6%B3%A8%E5%86%8C.png" alt="signup"></p>
+</li>
+<li><p>选择使用方案，此处有两个方案，”<strong>Unlimited public repositories for free</strong>“ 和 “<strong>Unlimited private repositories for $7/mouth</strong>“。第一项是免费的，第二项是收费的，默认就是第一项，无需修改，直接点击下一步 “<strong>Continue</strong>“<br><img src="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A802-plan.png" alt="plan"></p>
+</li>
+<li><p>该页面是一些用户调查，可按自己实际情况填写，也可以直接点击提交 “<strong>Submit</strong>“<br><img src="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A803-experience.png" alt="experience"></p>
+</li>
+<li><p>进入欢迎页面，有两个选项，”<strong>Read the guide</strong>“ 和 “<strong>Start a project</strong>“。第一项是使用教程，可以借鉴学习，第二项是建立一个新的工程，点击第二项 “<strong>Start a project</strong>“<br><img src="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A804-Learn.png" alt="Learn"></p>
+</li>
+<li><p>进入邮箱验证界面，提示需要验证邮箱地址<br><img src="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A805-verify.png" alt="verify"></p>
+</li>
+<li><p>登录自己的邮箱，看到一封来自 <strong>GitHub</strong> 邮件，点击下方的链接地址，验证邮箱<br><img src="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A806-email.png" alt="email"></p>
+</li>
+<li><p>再次回到了欢迎页面，可以看到左上方提示 “<strong>Your email was verified</strong>”，邮箱验证成功。<br><img src="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A807-verified.png" alt="verified"></p>
+</li>
+</ul>
+<h4 id="3-建立仓库"><a href="#3-建立仓库" class="headerlink" title="3. 建立仓库"></a>3. 建立仓库</h4><ul>
+<li><p>再次点击 “<strong>Start a project</strong>“<br><img src="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A807-verified.png" alt="verified"></p>
+</li>
+<li><p>进入新建仓库页面，输入仓库名称，此处以”<strong>test</strong>“为例。点击 “<strong>Create repository</strong>“<br><img src="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A809-create.png" alt="create"></p>
+</li>
+<li><p>仓库建立成功，进入快速设置页面，下方提示三种操作：<br>“<strong>…or create a new repository on the command” line</strong> 创建一个新仓库<br>“<strong>…or push an existing repository from the command line</strong>“ 上传一个已经建立的仓库<br>“<strong>…or import code from another repository</strong>“ 从其他的仓库导入代码<br>我们按第一种操作<br><img src="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A810-quicksetup.png" alt="quicksetup"></p>
+</li>
+<li><p>在终端命令行新建一个目录，在新目录下依次输入如下命令<br>输入 <code>echo &quot;# test&quot; &gt;&gt; README.md</code> 创建文件README.md<br>输入 <code>git init</code> 初始化仓库<br>输入 <code>git add README.md</code> 添加文件README.md<br>输入 <code>git commit -m &quot;first commit&quot;</code> 本地保存<br>输入 <code>git remote add origin https://github.com/b31jsc/test.git</code> 关联GitHub仓库<br>输入 <code>git push -u origin master</code> 上传，此处会提示输入用户名和密码，输入即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir test</span><br><span class="line">$ cd test/</span><br><span class="line">$ echo &quot;# test&quot; &gt;&gt; README.md</span><br><span class="line">$ git init </span><br><span class="line">已初始化空的 Git 仓库于 /home/jiang/git/test/.git/</span><br><span class="line">$ git add README.md</span><br><span class="line">$ git commit -m &quot;first commit&quot;</span><br><span class="line">[master （根提交） b6e0463] first commit</span><br><span class="line"> 1 file changed, 1 insertion(+)</span><br><span class="line"> create mode 100644 README.md</span><br><span class="line">$ git remote add origin https://github.com/b31jsc/test.git </span><br><span class="line">$ git push -u origin master</span><br><span class="line">Username for &apos;https://github.com&apos;: b31jsc</span><br><span class="line">Password for &apos;https://b31jsc@github.com&apos;: </span><br><span class="line">对象计数中: 3, 完成.</span><br><span class="line">写入对象中: 100% (3/3), 216 bytes | 216.00 KiB/s, 完成.</span><br><span class="line">Total 3 (delta 0), reused 0 (delta 0)</span><br><span class="line">To https://github.com/b31jsc/test.git</span><br><span class="line"> * [new branch]      master -&gt; master</span><br><span class="line">分支 &apos;master&apos; 设置为跟踪来自 &apos;origin&apos; 的远程分支 &apos;master&apos;。</span><br><span class="line">$</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>上传成功后刷新仓库页面，可以看到test已经上传<br><img src="https://raw.githubusercontent.com/b31jsc/img/master/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A8/GitHub%E7%9A%84%E6%B3%A8%E5%86%8C%E4%B8%8E%E4%BD%BF%E7%94%A811-test.png" alt="test"></p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/08/Remarkable的安装说明/" rel="next" title="REMARKABLE的安装说明">
+                <i class="fa fa-chevron-left"></i> REMARKABLE的安装说明
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/08/GitHub Pages + Hexo实现个人博客/" rel="prev" title="GitHub Pages + Hexo实现个人博客">
+                GitHub Pages + Hexo实现个人博客 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">b31jsc</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#0-准备工作"><span class="nav-text">0. 准备工作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-什么是-GitHub-？"><span class="nav-text">1. 什么是 GitHub ？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-注册"><span class="nav-text">2. 注册</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-建立仓库"><span class="nav-text">3. 建立仓库</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">b31jsc</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Pisces</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

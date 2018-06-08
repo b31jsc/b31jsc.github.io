@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="0. 准备工作 操作系统: Ubuntu 18.04  1. 什么是RemarkableRemarkable是一款功能强大的适用于Linux的Markdown编辑器。 它功能齐全，可定制。 您可以免费下载Linux版本（如果您愿意，也可以捐赠）。 简易安装程序可用于Debian，Ubuntu，Fedora，SUSE和Arch系统。 Remarkable is a powerful markdown">
+<meta property="og:type" content="article">
+<meta property="og:title" content="REMARKABLE的安装说明">
+<meta property="og:url" content="http://yoursite.com/2018/06/08/Remarkable的安装说明/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="0. 准备工作 操作系统: Ubuntu 18.04  1. 什么是RemarkableRemarkable是一款功能强大的适用于Linux的Markdown编辑器。 它功能齐全，可定制。 您可以免费下载Linux版本（如果您愿意，也可以捐赠）。 简易安装程序可用于Debian，Ubuntu，Fedora，SUSE和Arch系统。 Remarkable is a powerful markdown">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/b31jsc/img/master/Remarkable%E7%9A%84%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E/Remarkable%E7%9A%84%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E1-%E5%AE%98%E7%BD%91%E9%A6%96%E9%A1%B5.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/b31jsc/img/master/Remarkable%E7%9A%84%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E/Remarkable%E7%9A%84%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E2-%E4%B8%8B%E8%BD%BD.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/b31jsc/img/master/Remarkable%E7%9A%84%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E/Remarkable%E7%9A%84%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E3-%E5%90%AF%E5%8A%A8.png">
+<meta property="og:updated_time" content="2018-06-08T09:42:38.902Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="REMARKABLE的安装说明">
+<meta name="twitter:description" content="0. 准备工作 操作系统: Ubuntu 18.04  1. 什么是RemarkableRemarkable是一款功能强大的适用于Linux的Markdown编辑器。 它功能齐全，可定制。 您可以免费下载Linux版本（如果您愿意，也可以捐赠）。 简易安装程序可用于Debian，Ubuntu，Fedora，SUSE和Arch系统。 Remarkable is a powerful markdown">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/b31jsc/img/master/Remarkable%E7%9A%84%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E/Remarkable%E7%9A%84%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E1-%E5%AE%98%E7%BD%91%E9%A6%96%E9%A1%B5.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/08/Remarkable的安装说明/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>REMARKABLE的安装说明 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/Remarkable的安装说明/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="b31jsc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">REMARKABLE的安装说明
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-06-08 15:11:09 / 修改时间：17:42:38" itemprop="dateCreated datePublished" datetime="2018-06-08T15:11:09+08:00">2018-06-08</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="0-准备工作"><a href="#0-准备工作" class="headerlink" title="0. 准备工作"></a>0. 准备工作</h4><ul>
+<li>操作系统: Ubuntu 18.04</li>
+</ul>
+<h4 id="1-什么是Remarkable"><a href="#1-什么是Remarkable" class="headerlink" title="1. 什么是Remarkable"></a>1. 什么是Remarkable</h4><p>Remarkable是一款功能强大的适用于Linux的Markdown编辑器。 它功能齐全，可定制。 您可以免费下载Linux版本（如果您愿意，也可以捐赠）。 简易安装程序可用于Debian，Ubuntu，Fedora，SUSE和Arch系统。</p>
+<p>Remarkable is a powerful markdown editor available for Linux. It is fully featured and customizable. You can download the Linux version for free (or donate if you wish). Easy installers are available for Debian, Ubuntu, Fedora, SUSE and Arch systems.</p>
+<p>官方网站：<a href="http://remarkableapp.github.io/index.html" target="_blank" rel="noopener">http://remarkableapp.github.io/index.html</a><br>号称 THE BEST MARKDOWN EDITOR FOR LINUX AND WINDOWS<br><img src="https://raw.githubusercontent.com/b31jsc/img/master/Remarkable%E7%9A%84%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E/Remarkable%E7%9A%84%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E1-%E5%AE%98%E7%BD%91%E9%A6%96%E9%A1%B5.png" alt="官网首页"></p>
+<h4 id="2-安装Remarkable"><a href="#2-安装Remarkable" class="headerlink" title="2. 安装Remarkable"></a>2. 安装Remarkable</h4><ul>
+<li><p>下载deb安装文件<br>下载地址：<a href="http://remarkableapp.github.io/linux/download.html" target="_blank" rel="noopener">http://remarkableapp.github.io/linux/download.html</a><br><img src="https://raw.githubusercontent.com/b31jsc/img/master/Remarkable%E7%9A%84%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E/Remarkable%E7%9A%84%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E2-%E4%B8%8B%E8%BD%BD.png" alt="下载"></p>
+</li>
+<li><p>输入安装命令 <code>sudo dpkg -i remarkable_1.87_all.deb</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">$ sudo dpkg -i remarkable_1.87_all.deb  </span><br><span class="line">[sudo] jiang 的密码： </span><br><span class="line">正在选中未选择的软件包 remarkable。</span><br><span class="line">(正在读取数据库 ... 系统当前共安装有 193944 个文件和目录。)</span><br><span class="line">正准备解包 remarkable_1.87_all.deb  ...</span><br><span class="line">正在解包 remarkable (1.87) ...</span><br><span class="line">dpkg: 依赖关系问题使得 remarkable 的配置工作不能继续：</span><br><span class="line"> remarkable 依赖于 python3-markdown；然而：</span><br><span class="line">  未安装软件包 python3-markdown。</span><br><span class="line"> remarkable 依赖于 gir1.2-webkit-3.0；然而：</span><br><span class="line">  未安装软件包 gir1.2-webkit-3.0。</span><br><span class="line"> remarkable 依赖于 wkhtmltopdf；然而：</span><br><span class="line">  未安装软件包 wkhtmltopdf。</span><br><span class="line"></span><br><span class="line">dpkg: 处理软件包 remarkable (--install)时出错：</span><br><span class="line"> 依赖关系问题 - 仍未被配置</span><br><span class="line">正在处理用于 mime-support (3.60ubuntu1) 的触发器 ...</span><br><span class="line">正在处理用于 bamfdaemon (0.5.3+18.04.20180207.2-0ubuntu1) 的触发器 ...</span><br><span class="line">Rebuilding /usr/share/applications/bamf-2.index...</span><br><span class="line">正在处理用于 gnome-menus (3.13.3-11ubuntu1) 的触发器 ...</span><br><span class="line">正在处理用于 desktop-file-utils (0.23-1ubuntu3) 的触发器 ...</span><br><span class="line">正在处理用于 libglib2.0-0:amd64 (2.56.1-2ubuntu1) 的触发器 ...</span><br><span class="line">覆盖文件 /usr/share/glib-2.0/schemas/50_sogoupinyin.gschema.override 中指定的方案 org.gnome.settings-daemon.plugins.xsettings 中没有键 Gtk/IMModule；忽略对此键的覆盖。</span><br><span class="line">正在处理用于 hicolor-icon-theme (0.17-2) 的触发器 ...</span><br><span class="line">在处理时有错误发生：</span><br><span class="line"> remarkable</span><br><span class="line">$</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装发生错误，存在依赖关系问题<br>输入命令 <code>sudo apt-get upgrade -f</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get upgrade -f</span><br><span class="line">正在读取软件包列表... 完成</span><br><span class="line">正在分析软件包的依赖关系树       </span><br><span class="line">正在读取状态信息... 完成       </span><br><span class="line">正在修复依赖关系... 完成</span><br><span class="line">正在计算更新... 完成</span><br><span class="line">下列【新】软件包将被安装：</span><br><span class="line">  gir1.2-javascriptcoregtk-3.0 gir1.2-webkit-3.0 libjavascriptcoregtk-3.0-0</span><br><span class="line">  libwebkitgtk-3.0-0 python3-markdown python3-pygments wkhtmltopdf</span><br><span class="line">下列软件包将被升级：</span><br><span class="line">  gnome-system-monitor netcat-openbsd snapd</span><br><span class="line">升级了 3 个软件包，新安装了 7 个软件包，要卸载 0 个软件包，有 0 个软件包未被升级。</span><br><span class="line">有 1 个软件包没有被完全安装或卸载。</span><br><span class="line">需要下载 10.8 MB/23.2 MB 的归档。</span><br><span class="line">解压缩后会消耗 47.5 MB 的额外空间。</span><br><span class="line">您希望继续执行吗？ [Y/n] Y</span><br><span class="line">获取:1 http://mirrors.aliyun.com/ubuntu bionic/universe amd64 python3-markdown all 2.6.9-1 [53.7 kB]</span><br><span class="line">获取:2 http://mirrors.aliyun.com/ubuntu bionic/universe amd64 gir1.2-javascriptcoregtk-3.0 amd64 2.4.11-3ubuntu3 [13.1 kB]</span><br><span class="line">获取:3 http://mirrors.aliyun.com/ubuntu bionic/universe amd64 libjavascriptcoregtk-3.0-0 amd64 2.4.11-3ubuntu3 [1,844 kB]</span><br><span class="line">获取:4 http://mirrors.aliyun.com/ubuntu bionic/universe amd64 libwebkitgtk-3.0-0 amd64 2.4.11-3ubuntu3 [8,030 kB]</span><br><span class="line">获取:5 http://mirrors.aliyun.com/ubuntu bionic/universe amd64 gir1.2-webkit-3.0 amd64 2.4.11-3ubuntu3 [60.9 kB]</span><br><span class="line">获取:6 http://mirrors.aliyun.com/ubuntu bionic/universe amd64 wkhtmltopdf amd64 0.12.4-1 [181 kB]</span><br><span class="line">获取:7 http://mirrors.aliyun.com/ubuntu bionic/main amd64 python3-pygments all 2.2.0+dfsg-1 [574 kB]</span><br><span class="line">已下载 10.8 MB，耗时 5秒 (2,158 kB/s) </span><br><span class="line">正在选中未选择的软件包 python3-markdown。</span><br><span class="line">(正在读取数据库 ... 系统当前共安装有 194016 个文件和目录。)</span><br><span class="line">正准备解包 .../0-python3-markdown_2.6.9-1_all.deb  ...</span><br><span class="line">正在解包 python3-markdown (2.6.9-1) ...</span><br><span class="line">正在选中未选择的软件包 gir1.2-javascriptcoregtk-3.0:amd64。</span><br><span class="line">正准备解包 .../1-gir1.2-javascriptcoregtk-3.0_2.4.11-3ubuntu3_amd64.deb  ...</span><br><span class="line">正在解包 gir1.2-javascriptcoregtk-3.0:amd64 (2.4.11-3ubuntu3) ...</span><br><span class="line">正在选中未选择的软件包 libjavascriptcoregtk-3.0-0:amd64。</span><br><span class="line">正准备解包 .../2-libjavascriptcoregtk-3.0-0_2.4.11-3ubuntu3_amd64.deb  ...</span><br><span class="line">正在解包 libjavascriptcoregtk-3.0-0:amd64 (2.4.11-3ubuntu3) ...</span><br><span class="line">正在选中未选择的软件包 libwebkitgtk-3.0-0:amd64。</span><br><span class="line">正准备解包 .../3-libwebkitgtk-3.0-0_2.4.11-3ubuntu3_amd64.deb  ...</span><br><span class="line">正在解包 libwebkitgtk-3.0-0:amd64 (2.4.11-3ubuntu3) ...</span><br><span class="line">正在选中未选择的软件包 gir1.2-webkit-3.0:amd64。</span><br><span class="line">正准备解包 .../4-gir1.2-webkit-3.0_2.4.11-3ubuntu3_amd64.deb  ...</span><br><span class="line">正在解包 gir1.2-webkit-3.0:amd64 (2.4.11-3ubuntu3) ...</span><br><span class="line">正在选中未选择的软件包 wkhtmltopdf。</span><br><span class="line">正准备解包 .../5-wkhtmltopdf_0.12.4-1_amd64.deb  ...</span><br><span class="line">正在解包 wkhtmltopdf (0.12.4-1) ...</span><br><span class="line">正准备解包 .../6-netcat-openbsd_1.187-1ubuntu0.1_amd64.deb  ...</span><br><span class="line">正在将 netcat-openbsd (1.187-1ubuntu0.1) 解包到 (1.187-1) 上 ...</span><br><span class="line">正准备解包 .../7-gnome-system-monitor_3.28.2-0ubuntu1_amd64.deb  ...</span><br><span class="line">正在将 gnome-system-monitor (3.28.2-0ubuntu1) 解包到 (3.28.1-1) 上 ...</span><br><span class="line">正在选中未选择的软件包 python3-pygments。</span><br><span class="line">正准备解包 .../8-python3-pygments_2.2.0+dfsg-1_all.deb  ...</span><br><span class="line">正在解包 python3-pygments (2.2.0+dfsg-1) ...</span><br><span class="line">正准备解包 .../9-snapd_2.32.9+18.04_amd64.deb  ...</span><br><span class="line">正在将 snapd (2.32.9+18.04) 解包到 (2.32.8+18.04) 上 ...</span><br><span class="line">正在设置 python3-markdown (2.6.9-1) ...</span><br><span class="line">正在设置 wkhtmltopdf (0.12.4-1) ...</span><br><span class="line">正在处理用于 mime-support (3.60ubuntu1) 的触发器 ...</span><br><span class="line">正在设置 gir1.2-javascriptcoregtk-3.0:amd64 (2.4.11-3ubuntu3) ...</span><br><span class="line">正在处理用于 desktop-file-utils (0.23-1ubuntu3) 的触发器 ...</span><br><span class="line">正在处理用于 libglib2.0-0:amd64 (2.56.1-2ubuntu1) 的触发器 ...</span><br><span class="line">覆盖文件 /usr/share/glib-2.0/schemas/50_sogoupinyin.gschema.override 中指定的方案 org.gnome.settings-daemon.plugins.xsettings 中没有键 Gtk/IMModule；忽略对此键的覆盖。</span><br><span class="line">正在设置 libjavascriptcoregtk-3.0-0:amd64 (2.4.11-3ubuntu3) ...</span><br><span class="line">正在设置 netcat-openbsd (1.187-1ubuntu0.1) ...</span><br><span class="line">正在处理用于 bamfdaemon (0.5.3+18.04.20180207.2-0ubuntu1) 的触发器 ...</span><br><span class="line">Rebuilding /usr/share/applications/bamf-2.index...</span><br><span class="line">正在设置 gnome-system-monitor (3.28.2-0ubuntu1) ...</span><br><span class="line">正在设置 snapd (2.32.9+18.04) ...</span><br><span class="line">snapd.snap-repair.service is a disabled or a static unit, not starting it.</span><br><span class="line">正在处理用于 libc-bin (2.27-3ubuntu1) 的触发器 ...</span><br><span class="line">正在处理用于 man-db (2.8.3-2) 的触发器 ...</span><br><span class="line">正在处理用于 gnome-menus (3.13.3-11ubuntu1) 的触发器 ...</span><br><span class="line">正在设置 python3-pygments (2.2.0+dfsg-1) ...</span><br><span class="line">正在设置 libwebkitgtk-3.0-0:amd64 (2.4.11-3ubuntu3) ...</span><br><span class="line">正在设置 gir1.2-webkit-3.0:amd64 (2.4.11-3ubuntu3) ...</span><br><span class="line">正在设置 remarkable (1.87) ...</span><br><span class="line">正在处理用于 libc-bin (2.27-3ubuntu1) 的触发器 ...</span><br><span class="line">$ </span><br><span class="line">$</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>完成依赖关系修复，再次输入 <code>sudo dpkg -i remarkable_1.87_all.deb</code>，安装成功。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ sudo dpkg -i remarkable_1.87_all.deb  </span><br><span class="line">(正在读取数据库 ... 系统当前共安装有 194353 个文件和目录。)</span><br><span class="line">正准备解包 remarkable_1.87_all.deb  ...</span><br><span class="line">正在将 remarkable (1.87) 解包到 (1.87) 上 ...</span><br><span class="line">正在设置 remarkable (1.87) ...</span><br><span class="line">正在处理用于 mime-support (3.60ubuntu1) 的触发器 ...</span><br><span class="line">正在处理用于 bamfdaemon (0.5.3+18.04.20180207.2-0ubuntu1) 的触发器 ...</span><br><span class="line">Rebuilding /usr/share/applications/bamf-2.index...</span><br><span class="line">正在处理用于 gnome-menus (3.13.3-11ubuntu1) 的触发器 ...</span><br><span class="line">正在处理用于 desktop-file-utils (0.23-1ubuntu3) 的触发器 ...</span><br><span class="line">正在处理用于 libglib2.0-0:amd64 (2.56.1-2ubuntu1) 的触发器 ...</span><br><span class="line">覆盖文件 /usr/share/glib-2.0/schemas/50_sogoupinyin.gschema.override 中指定的方案 org.gnome.settings-daemon.plugins.xsettings 中没有键 Gtk/IMModule；忽略对此键的覆盖。</span><br><span class="line">正在处理用于 hicolor-icon-theme (0.17-2) 的触发器 ...</span><br><span class="line">$</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>输入命令 <code>remarkable</code>启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ remarkable</span><br><span class="line">*Spellchecking not enabled.</span><br><span class="line">*To enable spellchecking install pygtkspellcheck</span><br><span class="line">*https://pypi.python.org/pypi/pygtkspellcheck/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>上传一张Remarkable的启动图片<br><img src="https://raw.githubusercontent.com/b31jsc/img/master/Remarkable%E7%9A%84%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E/Remarkable%E7%9A%84%E5%AE%89%E8%A3%85%E8%AF%B4%E6%98%8E3-%E5%90%AF%E5%8A%A8.png" alt="启动"></p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/08/UltraISO制作U盘启动盘/" rel="next" title="UltraISO制作U盘启动盘">
+                <i class="fa fa-chevron-left"></i> UltraISO制作U盘启动盘
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/08/GitHub的注册与使用/" rel="prev" title="GitHub 的注册与使用">
+                GitHub 的注册与使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">b31jsc</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#0-准备工作"><span class="nav-text">0. 准备工作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-什么是Remarkable"><span class="nav-text">1. 什么是Remarkable</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-安装Remarkable"><span class="nav-text">2. 安装Remarkable</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">b31jsc</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Pisces</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
