@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="介绍 Git 如何通过 objects 管理数据">
+<meta name="keywords" content="Git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git中的objects数据管理">
+<meta property="og:url" content="http://yoursite.com/2018/06/14/Git中的objects数据管理/index.html">
+<meta property="og:site_name" content="b31jsc">
+<meta property="og:description" content="介绍 Git 如何通过 objects 管理数据">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/b31jsc/img/master/Git%E4%B8%AD%E7%9A%84objects/Git%E4%B8%AD%E7%9A%84objects1-SVN.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/b31jsc/img/master/Git%E4%B8%AD%E7%9A%84objects/Git%E4%B8%AD%E7%9A%84objects2-Git.png">
+<meta property="og:updated_time" content="2018-06-15T03:11:31.945Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Git中的objects数据管理">
+<meta name="twitter:description" content="介绍 Git 如何通过 objects 管理数据">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/b31jsc/img/master/Git%E4%B8%AD%E7%9A%84objects/Git%E4%B8%AD%E7%9A%84objects1-SVN.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/14/Git中的objects数据管理/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Git中的objects数据管理 | b31jsc</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">b31jsc</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/14/Git中的objects数据管理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="b31jsc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="b31jsc">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Git中的objects数据管理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-06-14 13:49:08" itemprop="dateCreated datePublished" datetime="2018-06-14T13:49:08+08:00">2018-06-14</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-06-15 11:11:31" itemprop="dateModified" datetime="2018-06-15T11:11:31+08:00">2018-06-15</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">介绍 Git 如何通过 objects 管理数据</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="0-前言"><a href="#0-前言" class="headerlink" title="﻿0. 前言"></a>﻿0. 前言</h3><p>学习Git的时候见到如下描述：</p>
+<blockquote>
+<p>Git直接记录快照，而非差异比较。<br>Git 和其他版本控制系统的主要差别在于，Git 只关心文件数据的整体是否发生变化，而大多数其他系统则只关心文件内容的具体差异。这类系统（CVS，Subversion，Perforce，Bazaar 等等）每次记录有哪些文件作了更新，以及都更新了哪些行的什么内容。如下图：<br><img src="https://raw.githubusercontent.com/b31jsc/img/master/Git%E4%B8%AD%E7%9A%84objects/Git%E4%B8%AD%E7%9A%84objects1-SVN.png" alt="SVN"></p>
+<p>Git 并不保存这些前后变化的差异数据。实际上，Git 更像是把变化的文件作快照后，记录在一个微型的文件系统中。每次提交更新时，它会纵览一遍所有文件的指纹信息并对文件作一快照，然后保存一个指向这次快照的索引。为提高性能，若文件没有变化，Git 不会再次保存，而只对上次保存的快照作一链接。如下图：<br><img src="https://raw.githubusercontent.com/b31jsc/img/master/Git%E4%B8%AD%E7%9A%84objects/Git%E4%B8%AD%E7%9A%84objects2-Git.png" alt="GIT"></p>
+</blockquote>
+<p>一直没能理解快照snapshot的真正含义，快照是否就是文件的复制？如果是复制，一个大文件只修改了一小部分也会完全复制一份么？这样是否造成了资源的浪费？如果不是复制，那么快照又是什么呢？带着这些问题做了如下实验。</p>
+<h3 id="1-新建Git仓库"><a href="#1-新建Git仓库" class="headerlink" title="﻿1. 新建Git仓库"></a>﻿1. 新建Git仓库</h3><p><code>mkdir test</code> 新建目录 test<br><code>cd test/</code> 打开目录 test<br><code>git init</code> 初始化 Git 仓库<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir test</span><br><span class="line">$ d test/</span><br><span class="line">$ git init</span><br><span class="line">已初始化空的 Git 仓库于 /home/jiang/git/test/.git/</span><br></pre></td></tr></table></figure></p>
+<p>完成仓库建立后，目录 test 下新建了目录 .git，目录结构如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">$ tree .git/</span><br><span class="line">.git/</span><br><span class="line">├── branches</span><br><span class="line">├── config</span><br><span class="line">├── description</span><br><span class="line">├── HEAD</span><br><span class="line">├── hooks</span><br><span class="line">│   ├── applypatch-msg.sample</span><br><span class="line">│   ├── commit-msg.sample</span><br><span class="line">│   ├── fsmonitor-watchman.sample</span><br><span class="line">│   ├── post-update.sample</span><br><span class="line">│   ├── pre-applypatch.sample</span><br><span class="line">│   ├── pre-commit.sample</span><br><span class="line">│   ├── prepare-commit-msg.sample</span><br><span class="line">│   ├── pre-push.sample</span><br><span class="line">│   ├── pre-rebase.sample</span><br><span class="line">│   ├── pre-receive.sample</span><br><span class="line">│   └── update.sample</span><br><span class="line">├── info</span><br><span class="line">│   └── exclude</span><br><span class="line">├── objects</span><br><span class="line">│   ├── info</span><br><span class="line">│   └── pack</span><br><span class="line">└── refs</span><br><span class="line">    ├── heads</span><br><span class="line">    └── tags</span><br><span class="line"></span><br><span class="line">9 directories, 15 files</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>其中目录 .git/objects/ 存放所有的 Git 对象</p>
+<h3 id="2-新建文件"><a href="#2-新建文件" class="headerlink" title="﻿2. 新建文件"></a>﻿2. 新建文件</h3><p>新建文件 hello.txt，输入命令 <code>git add hello.txt</code>，查看目录 .git，发现目录 objects 下新增了一个文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ echo hello &gt; hello.txt</span><br><span class="line">$ git add hello.txt</span><br><span class="line">$ tree .git/objects/</span><br><span class="line">.git/objects/</span><br><span class="line">├── ce</span><br><span class="line">│   └── 013625030ba8dba906f756967f9e9ca394464a</span><br><span class="line">├── info</span><br><span class="line">└── pack</span><br><span class="line"></span><br><span class="line">3 directories, 1 file</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>输入命令 <code>git commit</code>，再次查看，发现目录 objects 下又新增了两个文件，目录 refs 下也新增了一个文件 master<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">$ git commit -m &quot;commit 1&quot;</span><br><span class="line">[master （根提交） c84bbf5] commit 1</span><br><span class="line"> 1 file changed, 1 insertion(+)</span><br><span class="line"> create mode 100644 hello.txt</span><br><span class="line">$ </span><br><span class="line">$ tree .git/objects/</span><br><span class="line">.git/objects/</span><br><span class="line">├── aa</span><br><span class="line">│   └── a96ced2d9a1c8e72c56b253a0e2fe78393feb7</span><br><span class="line">├── c8</span><br><span class="line">│   └── 4bbf54ec2858a684d6ccabe0a92292b0e8a163</span><br><span class="line">├── ce</span><br><span class="line">│   └── 013625030ba8dba906f756967f9e9ca394464a</span><br><span class="line">├── info</span><br><span class="line">└── pack</span><br><span class="line"></span><br><span class="line">5 directories, 3 files</span><br><span class="line">$ </span><br><span class="line">$ tree .git/refs/</span><br><span class="line">.git/refs/</span><br><span class="line">├── heads</span><br><span class="line">│   └── master</span><br><span class="line">└── tags</span><br><span class="line"></span><br><span class="line">2 directories, 1 file</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>依次查看新增的3个文件<br>文件 master 中的内容是一个随机字符串，内容与目录 objects 中的一个文件名高度类似。查看该随机字符串对应的文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cat .git/refs/heads/master</span><br><span class="line">c84bbf54ec2858a684d6ccabe0a92292b0e8a163</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>文件 4bbf54ec2858a684d6ccabe0a92292b0e8a163 的内容为乱码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ cat .git/objects/c8/4bbf54ec2858a684d6ccabe0a92292b0e8a163       </span><br><span class="line">x��M</span><br><span class="line">� @��=��</span><br><span class="line">         EG��z�q2�</span><br><span class="line">&amp;$��o�@�&gt;o��Ƨ�8D���g�qNd8J@v&gt;���	�&amp;�H�&gt;�ldk���l���Y*Ys&#123;����&gt;�qc��&quot;�u�Z]�_�(���6�%       </span><br><span class="line"></span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>目录 objects 中的文件是经过压缩的，需要使用命令 <code>git cat-file</code> 查看  </p>
+<blockquote>
+<p><code>git cat-file</code>命令介绍：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"> $ git cat-file</span><br><span class="line"> 用法：git cat-file (-t [--allow-unknown-type] | -s</span><br><span class="line"> [--allow-unknown-type] | -e | -p | &lt;类型&gt; | --textconv |</span><br><span class="line"> --filters) [--path=&lt;路径&gt;] &lt;对象&gt;</span><br><span class="line">    或：git cat-file (--batch | --batch-check)</span><br><span class="line">    [--follow-symlinks] [--textconv | --filters]</span><br><span class="line"> </span><br><span class="line"> &lt;类型&gt; 可以是其中之一：blob、tree、commit、tag</span><br><span class="line">     -t                    显示对象类型</span><br><span class="line">     -s                    显示对象大小</span><br><span class="line">     -e                    当没有错误时退出并返回零</span><br><span class="line">     -p                    美观地打印对象的内容</span><br><span class="line">     --textconv            对于数据对象，对其内容做文本转换</span><br><span class="line">     --filters             对于数据对象，对其内容做过滤</span><br><span class="line">     --path &lt;数据对象&gt;     对于 --textconv/--filters 使用一个特定的路径</span><br><span class="line">     --allow-unknown-type  允许 -s 和 -t 对损坏的对象生效</span><br><span class="line">     --buffer              缓冲 --batch 的输出</span><br><span class="line">     --batch[=&lt;格式&gt;]      显示从标准输入提供的对象的信息和内容</span><br><span class="line">     --batch-check[=&lt;格式&gt;]</span><br><span class="line">                           显示从标准输入提供的对象的信息</span><br><span class="line">     --follow-symlinks     跟随树内符号链接（和 --batch 或 --batch-check 共用）</span><br><span class="line">     --batch-all-objects   使用 --batch 或 --batch-check 参数显示所有对象</span><br><span class="line"></span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>输入命令 <code>git cat-file -p c84bbf54ec2858a684d6ccabe0a92292b0e8a163</code>，查看文件内容，第一行为 “tree + 随机字符串”，随机字符串与目录 objects 下的另一个文件名高度类似，第二行为 “author + 本文作者”，第三行为 “commiter + 上传人员”，最后一行是 commit message<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ git cat-file -p c84bbf54ec2858a684d6ccabe0a92292b0e8a163</span><br><span class="line">tree aaa96ced2d9a1c8e72c56b253a0e2fe78393feb7</span><br><span class="line">author b31jsc &lt;jiangshichenbj@qq.com&gt; 1528880332 +0800</span><br><span class="line">committer b31jsc &lt;jiangshichenbj@qq.com&gt; 1528880332 +0800</span><br><span class="line"></span><br><span class="line">commit 1</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>继续查看随机字符串对应的文件，输入命令 <code>git cat-file -p aaa96ced2d9a1c8e72c56b253a0e2fe78393feb7</code>，查看文件内容，第一行为 “数字 + blob + 随机字符串 + 文件名”，随机字符串与目录 objects 下的最后一个文件名高度类似，文件名与保存文件的名称一致<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git cat-file -p aaa96ced2d9a1c8e72c56b253a0e2fe78393feb7 </span><br><span class="line">100644 blob ce013625030ba8dba906f756967f9e9ca394464a	hello.txt</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>继续查看随机字符串对应的文件，输入命令 <code>git cat-file -p ce013625030ba8dba906f756967f9e9ca394464a</code>，查看文件内容，文件内容为 “hello”，与我们记录在文件 hello.txt 中的内容一致<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git cat-file -p ce013625030ba8dba906f756967f9e9ca394464a</span><br><span class="line">hello</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>至此，一个 master 文件，三个 objects 文件都已查看，梳理一下四个文件的内容与关系（文件名只记录前七个字符，方便查看）</p>
+<ul>
+<li>文件 <code>.git/refs/heads/master</code> 的内容指向了记录 commit 信息的文件</li>
+<li>文件 <code>.git/objects/c8/4bbf54e</code> 的内容为 commit 信息，包括 tree、author、commiter 和 commit message，其中 tree 指向了记录目录信息的文件</li>
+<li>文件 <code>.git/objects/aa/a96ced2</code> 的内容为目录信息，包括 blob 和该目录下的文件名，其中 blob 指向了记录文件内容的文件</li>
+<li>文件 <code>.git/objects/ce/0136250</code> 的内容为内容信息，只包含文件的具体内容，文件名称记录在 tree 中</li>
+</ul>
+<p>那么带来了一些新问题：</p>
+<ol>
+<li><strong>猜测</strong> 每次提交都会新建一个 commit 文件，master 的内容会及时更新，指向最新提交的 commit 信息</li>
+<li><strong>猜测</strong> commit 信息只需要包含根目录的 tree 信息</li>
+<li>tree 如果目录下又包含子目录，tree 中的内容该如何记录？</li>
+<li>如果 blob 只记录文件内容，假设两个文件名称和路径都不一致，但是内容相同，是否只有一个 blob ？</li>
+<li>blob 修改某个文件之后，会生成新的blob，还是通过其他方式记录？</li>
+</ol>
+<p>带着上述疑问，我们继续验证</p>
+<h3 id="3-新建目录"><a href="#3-新建目录" class="headerlink" title="3. 新建目录"></a>3. 新建目录</h3><p>根目录 test 下新建子目录 dir2，子目录 dir2 下新建文件 hello2.txt，输入命令 <code>git add dir2/hello2.txt</code>，查看目录 objects，发现目录下新增了文件 <code>.git/objects/14/be0d41c</code>，文件内容与 hello2.txt 相同<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir dir2</span><br><span class="line">$ echo &quot;hello2&quot; &gt; dir2/hello2.txt</span><br><span class="line">$ git add dir2/hello2.txt  </span><br><span class="line">$ tree .git/objects/</span><br><span class="line">.git/objects/</span><br><span class="line">├── 14</span><br><span class="line">│   └── be0d41c639d701e0fe23e835b5fe9524b4459d</span><br><span class="line">├── aa</span><br><span class="line">│   └── a96ced2d9a1c8e72c56b253a0e2fe78393feb7</span><br><span class="line">├── c8</span><br><span class="line">│   └── 4bbf54ec2858a684d6ccabe0a92292b0e8a163</span><br><span class="line">├── ce</span><br><span class="line">│   └── 013625030ba8dba906f756967f9e9ca394464a</span><br><span class="line">├── info</span><br><span class="line">└── pack</span><br><span class="line"></span><br><span class="line">6 directories, 4 files</span><br><span class="line">$</span><br><span class="line">$ git cat-file -p 14be0d41c639d701e0fe23e835b5fe9524b4459d</span><br><span class="line">hello2</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>输入命令 <code>git commit</code>，继续查看目录 objects，发现目录下新增了三个文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">$ git commit -m &quot;hello2 msg&quot;</span><br><span class="line">[master 16f146f] hello2 msg</span><br><span class="line"> 1 file changed, 1 insertion(+)</span><br><span class="line"> create mode 100644 dir2/hello2.txt</span><br><span class="line">$ tree .git/objects/</span><br><span class="line">.git/objects/</span><br><span class="line">├── 13</span><br><span class="line">│   └── 6a5a4969ce4ad5b5836df2f369b22ccce3f055</span><br><span class="line">├── 14</span><br><span class="line">│   └── be0d41c639d701e0fe23e835b5fe9524b4459d</span><br><span class="line">├── 16</span><br><span class="line">│   └── f146fb4380737991f6bb6e27eca549c4d2be90</span><br><span class="line">├── aa</span><br><span class="line">│   └── a96ced2d9a1c8e72c56b253a0e2fe78393feb7</span><br><span class="line">├── c8</span><br><span class="line">│   └── 4bbf54ec2858a684d6ccabe0a92292b0e8a163</span><br><span class="line">├── ce</span><br><span class="line">│   └── 013625030ba8dba906f756967f9e9ca394464a</span><br><span class="line">├── fe</span><br><span class="line">│   └── ea7c8f0b7b6bcbc1960875e7c47798576855d2</span><br><span class="line">├── info</span><br><span class="line">└── pack</span><br><span class="line"></span><br><span class="line">9 directories, 7 files</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>我们继续从文件 master 开始查看，文件 <code>.git/refs/heads/master</code> 中的内容指向了新的 commit 信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cat .git/refs/heads/master                              </span><br><span class="line">16f146fb4380737991f6bb6e27eca549c4d2be90</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>文件 <code>.git/objects/16/f146fb4</code> 记录了新的 commit 信息，仍然包含 tree、author、commiter 和 commit message 等信息，其中 tree 有更新，指向了一个新的 tree 信息，新增了一个 parent，指向上一次提交的 commit 信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ git cat-file -p 16f146fb4380737991f6bb6e27eca549c4d2be90</span><br><span class="line">tree 136a5a4969ce4ad5b5836df2f369b22ccce3f055</span><br><span class="line">parent c84bbf54ec2858a684d6ccabe0a92292b0e8a163</span><br><span class="line">author b31jsc &lt;jiangshichenbj@qq.com&gt; 1528964834 +0800</span><br><span class="line">committer b31jsc &lt;jiangshichenbj@qq.com&gt; 1528964834 +0800</span><br><span class="line"></span><br><span class="line">hello2 msg</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>文件 <code>.git/objects/13/6a5a496</code> 记录了新的 tree 信息，内容包含一个 tree 和一个 blob，根目录下正好有一个子目录 dir2 和一个文件 hello.txt<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ git cat-file -p 136a5a4969ce4ad5b5836df2f369b22ccce3f055</span><br><span class="line">040000 tree feea7c8f0b7b6bcbc1960875e7c47798576855d2	dir2</span><br><span class="line">100644 blob ce013625030ba8dba906f756967f9e9ca394464a	hello.txt</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>文件 <code>.git/objects/fe/ea7c8f0</code> 记录了子目录 dir2 的 tree 信息，内容包含一个 blob，指向文件 hello2.txt<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git cat-file -p feea7c8f0b7b6bcbc1960875e7c47798576855d2</span><br><span class="line">100644 blob 14be0d41c639d701e0fe23e835b5fe9524b4459d	hello2.txt</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>指向关系如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">master  </span><br><span class="line">└── commit 16f146              第二次 commit</span><br><span class="line">   ├── tree 136a5a4              目录 test  </span><br><span class="line">   │   ├──  tree feea7c8         目录 dir2  </span><br><span class="line">   │   │    └──  blob 14be0d4    文件 hello2.txt  </span><br><span class="line">   │   └──  blob ce01362         文件 hello.txt  与第一版为同一个文件</span><br><span class="line">   └── parent c84bbf5          第一次 commit</span><br><span class="line">       └──  tree aaa96ce         目录 test  </span><br><span class="line">            └──  blob ce01362    文件 hello.txt</span><br></pre></td></tr></table></figure></p>
+<p>上文提出的部分问题我们也就有答案了：</p>
+<ol>
+<li><strong>猜测</strong> 每次提交都会新建一个 commit 文件，master 的内容会及时更新，指向最新提交的 commit 信息  <strong>是的</strong></li>
+<li><strong>猜测</strong> commit 信息只需要包含根目录的 tree 信息 <strong>是的，有了根目录的 tree 信息，就可以还原成整个版本</strong></li>
+<li>tree 如果目录下又包含子目录，tree 中的内容该如何记录？<strong>分别记录目录和文件，目录通过 tree 记录，文件通过 blob 记录</strong></li>
+</ol>
+<h3 id="4-修改文件"><a href="#4-修改文件" class="headerlink" title="4. 修改文件"></a>4. 修改文件</h3><p>修改文件 hello.txt，输入命令 <code>git add</code>，查看目录 objects，发现目录下新增了一个文件 <code>.git/objects/15/b8f2a8f</code>，内容与文件 hello.txt 修改后的内容一致<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">$ echo &quot;hello1&quot; &gt; hello.txt</span><br><span class="line">$ git add hello.txt</span><br><span class="line">$ tree .git/objects/</span><br><span class="line">.git/objects/</span><br><span class="line">├── 13</span><br><span class="line">│   └── 6a5a4969ce4ad5b5836df2f369b22ccce3f055</span><br><span class="line">├── 14</span><br><span class="line">│   └── be0d41c639d701e0fe23e835b5fe9524b4459d</span><br><span class="line">├── 15</span><br><span class="line">│   └── b8f2a8ffc8a7789b65fdcf2505f23ea9e4dde0</span><br><span class="line">├── 16</span><br><span class="line">│   └── f146fb4380737991f6bb6e27eca549c4d2be90</span><br><span class="line">├── aa</span><br><span class="line">│   └── a96ced2d9a1c8e72c56b253a0e2fe78393feb7</span><br><span class="line">├── c8</span><br><span class="line">│   └── 4bbf54ec2858a684d6ccabe0a92292b0e8a163</span><br><span class="line">├── ce</span><br><span class="line">│   └── 013625030ba8dba906f756967f9e9ca394464a</span><br><span class="line">├── fe</span><br><span class="line">│   └── ea7c8f0b7b6bcbc1960875e7c47798576855d2</span><br><span class="line">├── info</span><br><span class="line">└── pack</span><br><span class="line"></span><br><span class="line">10 directories, 8 files</span><br><span class="line">$ </span><br><span class="line">$ git cat-file -p 15b8f2a8ffc8a7789b65fdcf2505f23ea9e4dde0</span><br><span class="line">hello1</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>输入命令 <code>git commit</code>，继续查看目录 objects，目录下又新增了两个文件，一个是 commit，记录本次 commit 信息，一个是 tree，将 blob 指向修改后的 hello.txt 文件<br>此处，不再赘述，指向关系如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">master  </span><br><span class="line">└── commit f0f28c9                 第三次 commit</span><br><span class="line">    ├── tree 4deb88d                 目录 test  </span><br><span class="line">    │   ├──  tree feea7c8            目录 dir2       与第二版一致</span><br><span class="line">    │   │    └──  blob 14be0d4       文件 hello2.txt 与第二版一致</span><br><span class="line">    │   └──  blob 15b8f2a            文件 hello.txt</span><br><span class="line">    └── parent 16f146f             第二次 commit</span><br><span class="line">        ├── tree 136a5a4             目录 test  </span><br><span class="line">        │   ├──  tree feea7c8        目录 dir2  </span><br><span class="line">        │   │    └──  blob 14be0d4   文件 hello2.txt  </span><br><span class="line">        │   └──  blob ce01362        文件 hello.txt  与第一版一致</span><br><span class="line">        └── parent c84bbf5         第一次 commit</span><br><span class="line">            └──  tree aaa96ce        目录 test  </span><br><span class="line">                 └──  blob ce01362   文件 hello.txt</span><br></pre></td></tr></table></figure></p>
+<p>接下来尝试将两个文件的内容修改为完全相同<br>输入命令 <code>cat dir2/hello2.txt &gt; hello.txt</code>，输入命令 <code>git add</code>，查看目录 objects，发现目录下文件数量没有变化<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cat dir2/hello2.txt &gt; hello.txt</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>输入命令 <code>git commit</code>，继续查看目录 objects，发现目录下新增了两个文件，一个是 commit，记录本次 commit 信息，一个是 tree，将 blob 指向 hello2.txt 文件<br>此处，不再赘述，指向关系如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">master  </span><br><span class="line">└── commit d16778c                     第四次 commit</span><br><span class="line">    ├── tree ea48e71                     目录 test  </span><br><span class="line">    │   ├──  tree feea7c8                目录 dir2       与第二版一致</span><br><span class="line">    │   │    └──  blob 14be0d4           文件 hello2.txt 与第二版一致</span><br><span class="line">    │   └──  blob 14be0d4                文件 hello.txt  与 hello2.txt 一致</span><br><span class="line">    └── parent f0f28c9                 第三次 commit</span><br><span class="line">        ├── tree 4deb88d                 目录 test  </span><br><span class="line">        │   ├──  tree feea7c8            目录 dir2       与第二版一致</span><br><span class="line">        │   │    └──  blob 14be0d4       文件 hello2.txt 与第二版一致</span><br><span class="line">        │   └──  blob 15b8f2a            文件 hello.txt</span><br><span class="line">        └── parent 16f146f             第二次 commit</span><br><span class="line">            ├── tree 136a5a4             目录 test  </span><br><span class="line">            │   ├──  tree feea7c8        目录 dir2  </span><br><span class="line">            │   │    └──  blob 14be0d4   文件 hello2.txt  </span><br><span class="line">            │   └──  blob ce01362        文件 hello.txt  与第一版一致</span><br><span class="line">            └── parent c84bbf5         第一次 commit</span><br><span class="line">                └──  tree aaa96ce        目录 test  </span><br><span class="line">                     └──  blob ce01362   文件 hello.txt</span><br></pre></td></tr></table></figure></p>
+<p>至此，完成上文提出的最后两个问题验证：</p>
+<ol start="4">
+<li>如果 blob 只记录文件内容，假设两个文件名称和路径都不一致，但是内容相同，是否只有一个 blob ？ <strong>是的，blob 只记录内容，内容一致就是同一个</strong></li>
+<li>修改某个文件之后，会生成新的blob，还是通过其他方式记录？ <strong>生成新的 blob</strong></li>
+</ol>
+<h3 id="汇总："><a href="#汇总：" class="headerlink" title="汇总："></a>汇总：</h3><p>git 将数据保存在目录 objects 下，称为对象。</p>
+<ul>
+<li><p>对象有四种类型：blob、tree、commit、tag</p>
+<ul>
+<li>blob: 每个 blob 对应一份文件内容，只记录文件的具体内容，不包含文件名称，文件内容通过 zlib 格式压缩，当文件内容被修改时会生成一个新 blob 文件，原 blob 文件依然保留。即使是不同路径和不同名称的两个文件，只要内容相同，会使用同一个对象 blob </li>
+<li>tree: 每个 tree 对应一个目录，记录该目录下的文件名和子目录名</li>
+<li>commit: 每个 commit 对应一次提交，记录本次提交message、根目录和父提交</li>
+<li>tag: 待补充</li>
+</ul>
+</li>
+<li><p>目录 objects 中的文件命名格式：<br>生成 objects 对象时，git 通过源文件计算出一个40位 SHA1 值，将 SHA1 值的前2位作为目录名、后38位作为文件名进行保存，通过 zlib 算法压缩文件内容生成对象文件。blob 只记录文件的具体内容，不包含文件名称，即使是不同路径和不同名称的两个文件，只要内容相同，会使用同一个 blob 文件<br>源文件对应的 SHA1 值可通过命令 <code>git hash-object</code> 查看<br>例如 hello.txt 文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ git hash-object hello.txt</span><br><span class="line">ce013625030ba8dba906f756967f9e9ca394464a</span><br><span class="line">$</span><br><span class="line">$ ls .git/objects/ce/013625030ba8dba906f756967f9e9ca394464a</span><br><span class="line">.git/objects/ce/013625030ba8dba906f756967f9e9ca394464a</span><br><span class="line">$</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>目录 refs 下的文件 master 内容对应最后一次提交的对象 commit。如果通过 <code>git reset</code> 等方式进行版本回溯，只需要修改 master 内容为对应版本的对象 commit</p>
+</li>
+<li><p>回答最初的疑问<br>一直没能理解快照snapshot的真正含义，快照是否就是文件的复制？如果是复制，一个大文件只修改了一小部分也会完全复制一份么？这样是否造成了资源的浪费？如果不是复制，那么快照又是什么呢？带着这些问题做了如下实验。<br><strong>Git 将源文件的内容通过 zlib 压缩、以 SHA1 值命名，保存为对象 blob。文件内容的任何修改都会创建一个新的 blob 对象。同一个文件的当前版本和历史版本，如果内容相同，则对应同一个对象 blob；如果内容不同，则对应不同的对象 blob。对象 blob 与文件内容一一对应。通过对象 commit 记录版本信息，通过对象 tree 记录目录结构。对象 commit 和对象 tree 可以快速还原出指定版本的目录结构，这种还原方式被称为快照</strong></p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Git/" rel="tag"># Git</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/14/Markdown常用语法/" rel="next" title="Markdown常用语法">
+                <i class="fa fa-chevron-left"></i> Markdown常用语法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">b31jsc</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#0-前言"><span class="nav-text">﻿0. 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-新建Git仓库"><span class="nav-text">﻿1. 新建Git仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-新建文件"><span class="nav-text">﻿2. 新建文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-新建目录"><span class="nav-text">3. 新建目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-修改文件"><span class="nav-text">4. 修改文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#汇总："><span class="nav-text">汇总：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">b31jsc</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Pisces</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
