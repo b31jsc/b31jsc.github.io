@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="介绍如何在OpenWRT中添加驱动模块，学习《LINUX设备驱动程序-第三版》">
+<meta name="keywords" content="OpenWRT,驱动">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenWRT中添加驱动模块">
+<meta property="og:url" content="http://yoursite.com/2018/07/04/OpenWRT中添加驱动模块/index.html">
+<meta property="og:site_name" content="b31jsc">
+<meta property="og:description" content="介绍如何在OpenWRT中添加驱动模块，学习《LINUX设备驱动程序-第三版》">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-04T08:22:30.199Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OpenWRT中添加驱动模块">
+<meta name="twitter:description" content="介绍如何在OpenWRT中添加驱动模块，学习《LINUX设备驱动程序-第三版》">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/07/04/OpenWRT中添加驱动模块/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>OpenWRT中添加驱动模块 | b31jsc</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">b31jsc</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/04/OpenWRT中添加驱动模块/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="b31jsc">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="b31jsc">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">OpenWRT中添加驱动模块
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-07-04 09:12:08 / 修改时间：16:22:30" itemprop="dateCreated datePublished" datetime="2018-07-04T09:12:08+08:00">2018-07-04</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">介绍如何在OpenWRT中添加驱动模块，学习《LINUX设备驱动程序-第三版》</div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="0-准备工作"><a href="#0-准备工作" class="headerlink" title="0. 准备工作"></a>0. 准备工作</h3><p>硬件：主芯片 MT7628NN，Flash 16M，内存 64M<br>软件：基于 MTK 原厂 SDK，OpenWrt v3.4，mtk-openwrt-sdk-20160324-8f8e4f1e.tar.bz2<br>文档：《Linux设备驱动程序 第三版》</p>
+<h3 id="1-添加模块目录"><a href="#1-添加模块目录" class="headerlink" title="1. 添加模块目录"></a>1. 添加模块目录</h3><p>在目录 <code>package</code> 中创建模块目录 <code>helloworld</code>，目录结构如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ tree package/kernel/helloworld/</span><br><span class="line">package/kernel/helloworld/</span><br><span class="line">├── Makefile</span><br><span class="line">└── src</span><br><span class="line">    ├── helloworld.c</span><br><span class="line">    └── Makefile</span><br><span class="line"></span><br><span class="line">1 directory, 3 files</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>目录 <code>helloworld</code> 中的文件 <code>Makefile</code> 内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">$ cat package/kernel/helloworld/Makefile</span><br><span class="line">#</span><br><span class="line"># Copyright (C) 2008-2012 OpenWrt.org</span><br><span class="line">#</span><br><span class="line"># This is free software, licensed under the GNU General Public License v2.</span><br><span class="line"># See /LICENSE for more information.</span><br><span class="line">#</span><br><span class="line"></span><br><span class="line">include $(TOPDIR)/rules.mk</span><br><span class="line">include $(INCLUDE_DIR)/kernel.mk</span><br><span class="line"></span><br><span class="line">PKG_NAME:=helloworld</span><br><span class="line">PKG_RELEASE:=1.0</span><br><span class="line"></span><br><span class="line">include $(INCLUDE_DIR)/package.mk</span><br><span class="line"></span><br><span class="line">define KernelPackage/helloworld</span><br><span class="line">  SUBMENU:=Other modules</span><br><span class="line">  TITLE:=helloworld for test</span><br><span class="line">  FILES:=$(PKG_BUILD_DIR)/helloworld.ko</span><br><span class="line">endef</span><br><span class="line"></span><br><span class="line">define Build/Prepare</span><br><span class="line">        mkdir -p $(PKG_BUILD_DIR)</span><br><span class="line">        $(CP) ./src/* $(PKG_BUILD_DIR)/</span><br><span class="line">endef</span><br><span class="line"></span><br><span class="line">define Build/Compile</span><br><span class="line">        $(MAKE) -C &quot;$(LINUX_DIR)&quot; V=1 \</span><br><span class="line">        CROSS_COMPILE=&quot;$(TARGET_CROSS)&quot; \</span><br><span class="line">        ARCH=&quot;$(LINUX_KARCH)&quot; \</span><br><span class="line">        SUBDIRS=&quot;$(PKG_BUILD_DIR)&quot; \</span><br><span class="line">        modules</span><br><span class="line">endef</span><br><span class="line"></span><br><span class="line">$(eval $(call KernelPackage,helloworld))</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>目录 <code>helloworld/src</code> 中的文件 <code>helloworld.c</code> 内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">$ cat package/kernel/helloworld/src/helloworld.c </span><br><span class="line">#include &lt;linux/init.h&gt;</span><br><span class="line">#include &lt;linux/module.h&gt;</span><br><span class="line">MODULE_LICENSE(&quot;Dual BSD/GPL&quot;);</span><br><span class="line"></span><br><span class="line">static int hello_init(void)</span><br><span class="line">&#123;</span><br><span class="line">    printk(KERN_ALERT &quot;Hello world\n&quot;);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static void hello_exit(void)</span><br><span class="line">&#123;</span><br><span class="line">    printk(KERN_ALERT &quot;Goodbye, cruel world\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module_init(hello_init);</span><br><span class="line">module_exit(hello_exit);</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>目录 <code>helloworld/src</code> 中的文件 <code>Makefile</code> 内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cat package/kernel/helloworld/src/Makefile </span><br><span class="line">obj-m += helloworld.o</span><br><span class="line">$</span><br></pre></td></tr></table></figure></p>
+<p>完成上诉目录结构建立，接下来进行编译。</p>
+<h3 id="2-编译模块"><a href="#2-编译模块" class="headerlink" title="2. 编译模块"></a>2. 编译模块</h3><p>输入命令 <code>make menuconfig</code>，打开编译选项 <em>kmod-helloworld</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ make menuconfig</span><br><span class="line">Kernel modules  ---&gt;</span><br><span class="line">    Other modules  ---&gt;</span><br><span class="line">        &lt; &gt; kmod-helloworld...................................... helloworld for test</span><br></pre></td></tr></table></figure></p>
+<p>输入一下回车，改为 M<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;M&gt; kmod-helloworld...................................... helloworld for test</span><br></pre></td></tr></table></figure></p>
+<p>输入命令 <code>make package/kernel/helloworld/compile V=s</code>，编译 <em>helloworld</em> 模块，等待编译成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ make package/kernel/helloworld/compile V=s</span><br></pre></td></tr></table></figure></p>
+<p>成功后可以在目录 <code>build_dir</code> 下找到 <em>helloworld.ko</em> 文件，可以在目录 <code>bin</code> 下找到 <em>ipk</em> 文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ ls build_dir/target-mipsel_24kec+dsp_uClibc-0.9.33.2/linux-ramips_mt7628/helloworld/helloworld.ko </span><br><span class="line">build_dir/target-mipsel_24kec+dsp_uClibc-0.9.33.2/linux-ramips_mt7628/helloworld/helloworld.ko</span><br><span class="line">$</span><br><span class="line">$ ls bin/ramips/packages/base/kmod-helloworld_3.10.14-1.0_ramips_24kec.ipk </span><br><span class="line">bin/ramips/packages/base/kmod-helloworld_3.10.14-1.0_ramips_24kec.ipk</span><br></pre></td></tr></table></figure></p>
+<p>ko 文件是 Linux 原生的驱动模块文件，可以使用 Linux 原生命令进行安装<br>ipk 文件是 OpenWRT 特有的软件包，需要配合 OpenWRT 中的命令进行安装</p>
+<h3 id="3-文件传入子板"><a href="#3-文件传入子板" class="headerlink" title="3. 文件传入子板"></a>3. 文件传入子板</h3><p>接下来需要将 ko 文件和 ipk 文件传入子板<br>配置 PC 和子板的 IP</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>PC</th>
+<th>子板</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IP</td>
+<td>10.7.10.10</td>
+<td>10.7.10.15</td>
+</tr>
+</tbody>
+</table>
+<p>PC 的 IP 配置方式省略，重点介绍如何在 OpenWRT 中配置子板 IP<br>输入命令 <code>uci show network</code>，查看子板网络配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">root@OpenWrt:/# uci show network</span><br><span class="line">network.loopback=interface</span><br><span class="line">network.loopback.ifname=lo</span><br><span class="line">network.loopback.proto=static</span><br><span class="line">network.loopback.ipaddr=127.0.0.1</span><br><span class="line">network.loopback.netmask=255.0.0.0</span><br><span class="line">network.globals=globals</span><br><span class="line">network.globals.ula_prefix=fd74:5f6a:5a8d::/48</span><br><span class="line">network.lan=interface</span><br><span class="line">network.lan.ifname=eth0.1</span><br><span class="line">network.lan.force_link=1</span><br><span class="line">network.lan.type=bridge</span><br><span class="line">network.lan.proto=static</span><br><span class="line">network.lan.netmask=255.255.255.0</span><br><span class="line">network.lan.ip6assign=60</span><br><span class="line">network.lan.ipaddr=192.168.1.1</span><br><span class="line">network.wan=interface</span><br><span class="line">network.wan.ifname=eth0.2</span><br><span class="line">network.wan.proto=dhcp</span><br><span class="line">network.wan.enabled=1</span><br><span class="line">network.wl_wan=interface</span><br><span class="line">network.wl_wan.ifname=apcli0</span><br><span class="line">network.wl_wan.proto=dhcp</span><br><span class="line">network.wl_wan.enabled=0</span><br><span class="line">network.@switch[0]=switch</span><br><span class="line">network.@switch[0].name=switch0</span><br><span class="line">network.@switch[0].reset=1</span><br><span class="line">network.@switch[0].enable_vlan=1</span><br><span class="line">network.@switch_vlan[0]=switch_vlan</span><br><span class="line">network.@switch_vlan[0].device=switch0</span><br><span class="line">network.@switch_vlan[0].vlan=1</span><br><span class="line">network.@switch_vlan[0].ports=0 1 2 3 5 6t</span><br><span class="line">network.@switch_vlan[1]=switch_vlan</span><br><span class="line">network.@switch_vlan[1].device=switch0</span><br><span class="line">network.@switch_vlan[1].vlan=2</span><br><span class="line">network.@switch_vlan[1].ports=4 6t</span><br><span class="line">root@OpenWrt:/#</span><br></pre></td></tr></table></figure></p>
+<p>可以看到 <code>network.lan.ipaddr=192.168.1.1</code>，当前子板 IP 为 192.168.1.1<br>输入命令 <code>uci set network.lan.ipaddr=10.7.10.15</code>，修改子板 IP 为 10.7.10.15（尚未生效）<br>输入命令 <code>uci commit network</code>  保存当前配置，重启有效<br>输入命令 <code>/etc/init.d/network restart</code> 重启网络脚本，使配置生效<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@OpenWrt:/# uci set network.lan.ipaddr=10.7.10.15</span><br><span class="line">root@OpenWrt:/# uci commit network</span><br><span class="line">root@OpenWrt:/# /etc/init.d/network restart</span><br></pre></td></tr></table></figure></p>
+<p>待脚本执行结束，输入命令 <code>ifconfig</code>，看到 <em>br-lan</em> 的 IP 已经修改成功<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">root@OpenWrt:/# ifconfig br-lan</span><br><span class="line">br-lan    Link encap:Ethernet  HWaddr 00:0C:43:E1:76:29  </span><br><span class="line">          inet addr:10.7.10.15  Bcast:10.7.10.255  Mask:255.255.255.0</span><br><span class="line">          inet6 addr: fd74:5f6a:5a8d::1/60 Scope:Global</span><br><span class="line">          inet6 addr: fe80::20c:43ff:fee1:7629/64 Scope:Link</span><br><span class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</span><br><span class="line">          RX packets:122 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line">          TX packets:28 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line">          collisions:0 txqueuelen:0 </span><br><span class="line">          RX bytes:7764 (7.5 KiB)  TX bytes:3341 (3.2 KiB)</span><br><span class="line"></span><br><span class="line">root@OpenWrt:/#</span><br></pre></td></tr></table></figure></p>
+<p>输入命令 <code>ping 10.7.10.10</code>，ping PC，看到可以 ping 通，说明网络已经通畅<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">root@OpenWrt:/# </span><br><span class="line">确定可以 ping 通 10.7.10.10</span><br><span class="line">root@OpenWrt:/# ping 10.7.10.10</span><br><span class="line">PING 10.7.10.10 (10.7.10.10): 56 data bytes</span><br><span class="line">64 bytes from 10.7.10.10: seq=0 ttl=64 time=1.160 ms</span><br><span class="line">64 bytes from 10.7.10.10: seq=1 ttl=64 time=0.656 ms</span><br><span class="line">64 bytes from 10.7.10.10: seq=2 ttl=64 time=0.720 ms</span><br><span class="line">^C</span><br><span class="line">--- 10.7.10.10 ping statistics ---</span><br><span class="line">3 packets transmitted, 3 packets received, 0% packet loss</span><br><span class="line">round-trip min/avg/max = 0.656/0.845/1.160 ms</span><br><span class="line">root@OpenWrt:/#</span><br></pre></td></tr></table></figure></p>
+<p>通过 tftp 获取 PC 上的 ko 文件和 ipk 文件，PC 端 tftp server 通过 tftpd32.exe 搭建<br>输入如下命令，将 <em>ko</em> 文件和 <em>ipk</em> 文件传入子板<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">root@OpenWrt:/# mkdir tmp/ko</span><br><span class="line">root@OpenWrt:/# cd tmp/ko/</span><br><span class="line">root@OpenWrt:/tmp/ko# tftp -gr helloworld.ko  10.7.10.10 </span><br><span class="line">root@OpenWrt:/tmp/ko# ls</span><br><span class="line">helloworld.ko</span><br><span class="line">root@OpenWrt:/tmp/ko# tftp -gr kmod-helloworld_3.10.14-1.0_ramips_24kec.ipk  10.7.10.10</span><br><span class="line">root@OpenWrt:/tmp/ko# ls</span><br><span class="line">helloworld.ko</span><br><span class="line">kmod-helloworld_3.10.14-1.0_ramips_24kec.ipk</span><br><span class="line">root@OpenWrt:/tmp/ko#</span><br></pre></td></tr></table></figure></p>
+<h3 id="4-安装驱动"><a href="#4-安装驱动" class="headerlink" title="4. 安装驱动"></a>4. 安装驱动</h3><h4 id="4-1-安装ko文件"><a href="#4-1-安装ko文件" class="headerlink" title="4.1 安装ko文件"></a>4.1 安装ko文件</h4><p>ko 文件通过 Linux 原生命令 insmod、rmmod 和 lsmod 分别进行安装、卸载和查看<br>输入命令 <code>insmod helloworld.ko</code>，安装驱动模块，可以看到模块初始化的打印<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@OpenWrt:/tmp/ko# insmod helloworld.ko </span><br><span class="line">[ 3815.112000] Hello world</span><br><span class="line">root@OpenWrt:/tmp/ko#</span><br></pre></td></tr></table></figure></p>
+<p>输入命令 <code>lsmod</code>，查看已经安装的驱动模块，可以看到模块 <em>helloworld</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">root@OpenWrt:/tmp/ko# lsmod </span><br><span class="line"> ... ...</span><br><span class="line">em_u32                   576  0 </span><br><span class="line">fat                    48319  1 vfat</span><br><span class="line">helloworld               626  0 </span><br><span class="line">ifb                     3104  0 </span><br><span class="line">ip6_tables              9649  3 ip6table_raw</span><br><span class="line"> ... ...</span><br><span class="line">root@OpenWrt:/tmp/ko#</span><br></pre></td></tr></table></figure></p>
+<p>输入命令 <code>rmmod helloworld</code>，卸载驱动模块，可以看到模块卸载的打印<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@OpenWrt:/tmp/ko# rmmod helloworld</span><br><span class="line">[ 3822.944000] Goodbye, cruel world</span><br><span class="line">root@OpenWrt:/tmp/ko#</span><br></pre></td></tr></table></figure></p>
+<h4 id="4-2-安装ipk文件"><a href="#4-2-安装ipk文件" class="headerlink" title="4.2 安装ipk文件"></a>4.2 安装ipk文件</h4><p>ipk 文件通过 OpenWRT 命令 opkg 安装和卸载<br>输入命令 <code>opkg install kmod-helloworld_3.10.14-1.0_ramips_24kec.ipk</code>，安装 ipk 文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@OpenWrt:/tmp/ko# opkg install kmod-helloworld_3.10.14-1.0_ramips_24kec.ipk </span><br><span class="line">Installing kmod-helloworld (3.10.14-1.0) to root...</span><br><span class="line">Configuring kmod-helloworld.</span><br><span class="line">root@OpenWrt:/tmp/ko#</span><br></pre></td></tr></table></figure></p>
+<p>输入命令 <code>opkg list</code>，可以看到 <em>kmod-helloworld - 3.10.14-1.0</em> 已经安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">root@OpenWrt:/tmp/ko# opkg list</span><br><span class="line"> ... ...</span><br><span class="line">kmod-fs-vfat - 3.10.14-1</span><br><span class="line">kmod-gre - 3.10.14-1</span><br><span class="line">kmod-helloworld - 3.10.14-1.0</span><br><span class="line">kmod-hw_wdg - 3.10.14-1</span><br><span class="line">kmod-ifb - 3.10.14-1</span><br><span class="line"> ... ...</span><br><span class="line">root@OpenWrt:/tmp/ko#</span><br></pre></td></tr></table></figure></p>
+<p>查看目录 <code>/lib/modules/3.10.14/</code>，发现多了一个文件 <em>helloworld.ko</em>，ko 文件的安装方式上文已经介绍<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">root@OpenWrt:/tmp/ko# ls /lib/modules/3.10.14/</span><br><span class="line"> ... ...</span><br><span class="line">em_u32.ko</span><br><span class="line">fat.ko</span><br><span class="line">helloworld.ko</span><br><span class="line">ifb.ko</span><br><span class="line">ip6_tables.ko</span><br><span class="line"> ... ...</span><br><span class="line">root@OpenWrt:/tmp/ko#</span><br></pre></td></tr></table></figure></p>
+<p>输入命令 <code>opkg remove kmod-helloworld - 3.10.14-1.0</code>，卸载 ipk 文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@OpenWrt:/tmp/ko# opkg remove kmod-helloworld - 3.10.14-1.0</span><br><span class="line">Removing package kmod-helloworld from root...</span><br><span class="line">root@OpenWrt:/tmp/ko#</span><br></pre></td></tr></table></figure></p>
+<h3 id="5、总结"><a href="#5、总结" class="headerlink" title="5、总结"></a>5、总结</h3><p>至此，我们已经可以在 OpenWRT 中编译和安装驱动模块了，一个好的开始！</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/OpenWRT/" rel="tag"># OpenWRT</a>
+          
+            <a href="/tags/驱动/" rel="tag"># 驱动</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/14/Git中的objects数据管理/" rel="next" title="Git中的objects数据管理">
+                <i class="fa fa-chevron-left"></i> Git中的objects数据管理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">b31jsc</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#0-准备工作"><span class="nav-text">0. 准备工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-添加模块目录"><span class="nav-text">1. 添加模块目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-编译模块"><span class="nav-text">2. 编译模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-文件传入子板"><span class="nav-text">3. 文件传入子板</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-安装驱动"><span class="nav-text">4. 安装驱动</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-安装ko文件"><span class="nav-text">4.1 安装ko文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-安装ipk文件"><span class="nav-text">4.2 安装ipk文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、总结"><span class="nav-text">5、总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">b31jsc</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Pisces</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
